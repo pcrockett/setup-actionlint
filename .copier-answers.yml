@@ -1,0 +1,11 @@
+_commit: e87d6cf
+_src_path: gh:pcrockett/template-setup-action
+action_description: Installs actionlint in your GitHub workflows
+action_human_friendly_name: Setup Actionlint
+action_name: setup-actionlint
+github_org: pcrockett
+tool_doc_url: https://github.com/rhysd/actionlint
+tool_download_url: https://github.com/rhysd/actionlint/releases/download/v${VERSION}/actionlint_${VERSION}_linux_amd64.tar.gz
+tool_latest_checksum: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+tool_latest_version: 1.7.12
+tool_name: actionlint

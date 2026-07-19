@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://www.schemastore.org/github-action.json
+
+name: 'Setup Actionlint'
+description: 'Installs actionlint in your GitHub workflows'
+inputs:
+  version:
+    description: 'Version to install, ex: 1.7.12'
+    default: '1.7.12'
+  checksum:
+    description: 'SHA256 checksum of download artifact'
+    default: '8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8'
+
+runs:
+  using: "composite"
+  steps:
+    - id: cache
+      name: Cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      with:
+        path: ~/.cache/setup-actionlint
+        key: setup-actionlint-1|${{ inputs.version }}|${{ inputs.checksum }}
+
+    - name: Download actionlint
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        CHECKSUM: ${{ inputs.checksum }}
+      run: |
+        mkdir -p ~/.cache/setup-actionlint
+        "${GITHUB_ACTION_PATH}/download-artifact.sh" \
+          "https://github.com/rhysd/actionlint/releases/download/v${VERSION}/actionlint_${VERSION}_linux_amd64.tar.gz" \
+          ~/.cache/setup-actionlint/artifact.tar.gz \
+          "${CHECKSUM}"
+
+    - name: Install actionlint
+      shell: bash
+      run: |
+        install_dir=~/.local/bin
+        mkdir -p "${install_dir}"
+        cd ~/.cache/setup-actionlint
+        tar -xzf artifact.tar.gz
+        chmod +x actionlint
+        mv actionlint "${install_dir}"
+        echo "${install_dir}" >>"${GITHUB_PATH}"
